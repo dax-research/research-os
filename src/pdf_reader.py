@@ -1,20 +1,25 @@
 import os
 import pdfplumber
 
+
 def extract_text_from_pdf(pdf_path):
-    text = ""
+
+    pages = []
 
     with pdfplumber.open(pdf_path) as pdf:
-        num_pages = len(pdf.pages)
 
-        for page in pdf.pages:
+        for page_number, page in enumerate(pdf.pages, start=1):
+
             page_text = page.extract_text()
 
             if page_text:
-                text += page_text + "\n"
+                pages.append({
+                    "page_number": page_number,
+                    "text": page_text
+                })
 
     return {
         "filename": os.path.basename(pdf_path),
-        "num_pages": num_pages,
-        "text": text
+        "num_pages": len(pdf.pages),
+        "pages": pages
     }
